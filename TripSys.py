@@ -25,6 +25,7 @@ ELECTRIC_BLUE = (1,.5,0)
 PINK = (.1,.9,.5)
 YELLOW = (0,0,1)
 PURPLE = (0,1,0)
+ORANGE = (0,0.7,1)
 
 #Defining a list of numbers for calibration, numbers in cm
 calibration = []
@@ -63,28 +64,25 @@ def convert_to_feet(unit):
 
 #Creating a method to beep the sensor
 def alert_beep():
-    #Creating a counter for now, later it should stop as soon as someone stops
-    counter = 0
-    while counter <= 5:
-        buzzer.on()
-        sleep(0.5)
-        buzzer.off()
-        sleep(0.5)
-        counter += 1
+    buzzer.on()
+    sleep(0.25)
+    buzzer.off()
+    sleep(0.25)
     
 
 #---------------------------------------Execution---------------------------------------
-led.color = ELECTRIC_BLUE
+led.color = ORANGE
 calibrate_distance()
-print(min(calibration))
-print(max(calibration))
 
-while ultrasonic_sensor.distance >= dist_to_wall - buffer_distance and ultrasonic_sensor.distance <= dist_to_wall + buffer_distance:
-    led.color = GREEN
-    print("In range")
-    sleep(0.5)
+while True:
+    if ultrasonic_sensor.distance >= dist_to_wall - buffer_distance and ultrasonic_sensor.distance <= dist_to_wall + buffer_distance:
+        led.color = GREEN
+        print("In range")
+        sleep(0.5)
+    else:
+        led.color = RED
+        print("Out of range")
+        alert_beep()
 
-led.color = RED
-print("Out of range")
-print("Program Terminated!")
-sleep(2)
+
+
