@@ -3,6 +3,12 @@ from gpiozero import RGBLED
 from gpiozero import DistanceSensor
 from time import sleep
 import math
+from datetime import datetime
+from email.message import EmailMessage
+import ssl
+import smtplib
+
+current_time = datetime.now()
 
 #Setting up the RGB LED to the GPIO connections
 led = RGBLED(red=17, green=18, blue=27)
@@ -60,7 +66,8 @@ def calibrate_distance():
 
 #Writing a method to convert distance to feet
 def convert_to_feet(unit):
-    return unit * 100 /2.54 / 12
+    num = unit * 100 /2.54 / 12
+    return round(num,2)
 
 #Creating a method to beep the sensor
 def alert_beep():
@@ -68,21 +75,57 @@ def alert_beep():
     sleep(0.25)
     buzzer.off()
     sleep(0.25)
+
+#List of the email recipients,
+email_recipients = ['keibler.joshua@gmail.com']
+
+def send_emails():
+    email_sender = 'jkeibler913@gmail.com'
+    email_password = 'cbav ssng tlvl sqpy'
+    subject = 'Security Alert! Trap Triggered!'
+    body = f"""
+        Hello Valued Customer,
+
+        This is TripSys, your favorite home/business security system! We are contacting you to inform you of some activity.
+
+        Our system has picked up some activity that had triggered the alarm. This happened on {current_time.strftime('%d/%m/%Y')}, at {current_time.strftime('%H:%M:%S')}.
+
+        While we are not able to verify who or what triggered it, we encourage you to look into it, investigate, or possibly report to the police if it was clayton!
+
+        Disclaimer: This is an automated email message. 
+
+        Your local security system,
+        - TripSys
+    """
+    #Defining the contents of the email
+    em = EmailMessage()
+    em['From'] = email_sender
     
+    em['Subject'] = subject
+    em.set_content(body)
+    
+    context = ssl.create_default_context()
+    
+    with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp:
+        smtp.login(email_sender, email_password)
+        for reciever in email_recipients:
+            em['To'] = reciever
+            smtp.sendmail(email_sender, reciever, em.as_string())
+    pass
 
 #---------------------------------------Execution---------------------------------------
 led.color = ORANGE
 calibrate_distance()
-
-while True:
+end = True
+while end == True:
     if ultrasonic_sensor.distance >= dist_to_wall - buffer_distance and ultrasonic_sensor.distance <= dist_to_wall + buffer_distance:
         led.color = GREEN
-        print("In range")
-        sleep(0.5)
+        
     else:
         led.color = RED
         print("Out of range")
         alert_beep()
-
-
-
+        end = False
+        send_emails()
+        
+        
