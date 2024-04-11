@@ -7,6 +7,8 @@ from datetime import datetime
 from email.message import EmailMessage
 import ssl
 import smtplib
+from LCD_Display.PCF8574 import PCF8574_GPIO
+from LCD_Display.Adafruit_LCD1602 import Adafruit_CharLCD
 
 current_time = datetime.now()
 
@@ -77,7 +79,7 @@ def alert_beep():
     sleep(0.25)
 
 #List of the email recipients,
-email_recipients = ['keibler.joshua@gmail.com']
+email_recipients = ['keibler.joshua@gmail.com', 'rliddick@southhills.edu','cotto06@southhills.edu']
 
 def send_emails():
     email_sender = 'jkeibler913@gmail.com'
@@ -86,21 +88,21 @@ def send_emails():
     body = f"""
         Hello Valued Customer,
 
-        This is TripSys, your favorite home/business security system! We are contacting you to inform you of some activity.
+    This is TripSys, your favorite home/business security system! We are contacting you to inform you of some activity.
 
-        Our system has picked up some activity that had triggered the alarm. This happened on {current_time.strftime('%d/%m/%Y')}, at {current_time.strftime('%H:%M:%S')}.
+    Our system has picked up some activity that had triggered the alarm. This happened on {current_time.strftime('%d/%m/%Y')}, at {current_time.strftime('%H:%M:%S')}.
 
-        While we are not able to verify who or what triggered it, we encourage you to look into it, investigate, or possibly report to the police if it was clayton!
+    While we are not able to verify who or what triggered it, we encourage you to look into it, investigate, or possibly report to the police if it was clayton!
 
-        Disclaimer: This is an automated email message. 
+    Disclaimer: This is an automated email message. 
 
-        Your local security system,
-        - TripSys
+    Your local security system,
+    - TripSys
     """
     #Defining the contents of the email
     em = EmailMessage()
     em['From'] = email_sender
-    
+    em['To'] = email_recipients
     em['Subject'] = subject
     em.set_content(body)
     
@@ -109,7 +111,8 @@ def send_emails():
     with smtplib.SMTP_SSL('smtp.gmail.com',465,context=context) as smtp:
         smtp.login(email_sender, email_password)
         for reciever in email_recipients:
-            em['To'] = reciever
+            # Trying to change the persons name it is sent to
+            # em['To'] = reciever
             smtp.sendmail(email_sender, reciever, em.as_string())
     pass
 
@@ -117,15 +120,45 @@ def send_emails():
 led.color = ORANGE
 calibrate_distance()
 end = True
+
+PCF8574_address = 0x27  # I2C address of the PCF8574 chip.
+PCF8574A_address = 0x3F  # I2C address of the PCF8574A chip.
+# Create PCF8574 GPIO adapter.
+try:
+    mcp = PCF8574_GPIO(PCF8574_address)
+except:
+    try:
+        mcp = PCF8574_GPIO(PCF8574A_address)
+    except:
+        print ('I2C Address Error !')
+        exit(1)
+
+lcd = Adafruit_CharLCD(pin_rs=0, pin_e=2, pins_db=[4,5,6,7], GPIO=mcp)
+
+mcp.output(3,1)     # turn on LCD backlight
+lcd.begin(16,2)
+
+
+#Begin the loop for detection
 while end == True:
     if ultrasonic_sensor.distance >= dist_to_wall - buffer_distance and ultrasonic_sensor.distance <= dist_to_wall + buffer_distance:
         led.color = GREEN
+        
+        lcd.clear()
+        
+        lcd.message('All Clear...\nAll Clear...')
         
     else:
         led.color = RED
         print("Out of range")
         alert_beep()
-        end = False
-        send_emails()
         
+        lcd.clear()
+        lcd.message("Intruder!\nClayton Detected")
         
+        #send_emails()
+        #end = False
+        
+    sleep(0.05)
+
+lcd.clear()

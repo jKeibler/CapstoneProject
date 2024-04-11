@@ -9,6 +9,7 @@ current_time = datetime.now()
 
 email_sender = 'jkeibler913@gmail.com'
 email_password = 'cbav ssng tlvl sqpy'
+email_pw = '$Piproj35'
 email_reciever = 'rliddick@southhills.edu'
 email_recipients = ['keibler.joshua@gmail.com', 'cotto06@southhills.edu','npage@southhills.edu',]
 

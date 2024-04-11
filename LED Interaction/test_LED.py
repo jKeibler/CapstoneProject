@@ -15,4 +15,4 @@ ORANGE = (0,0.7,1)
 led = RGBLED(red=17, green=18, blue=27)
 
 while True:
-    led.color = (0,0.7,1)
+    led.color = (0.2,0.7,0)
