@@ -16,12 +16,18 @@ from markupsafe import escape
 app = Flask(__name__)
 @app.route("/")
 def index():
-    return render_template('static.html')
+    return render_template('index.html')
+
 
 #To run this at 127.0.0.1:5000 
-#flask --app TripSys.py run
+#flask --app app.py run
 #To run in a better mode for reloads try this
-#flask --app TripSys.py run --debugger --reload
+#flask --app app.py run --debugger --reload --host=0.0.0.0
+
+#BEFORE RUNNING ON PROJ RUN COMMAND
+# cd myProj
+#  . .venv/bin/activate
+# 
 
 
 current_time = datetime.now()
@@ -157,24 +163,32 @@ lcd.begin(16,2)
 #Begin the loop for detection
 while end == True:
     now = datetime.now()
-    if ultrasonic_sensor.distance >= dist_to_wall - buffer_distance and ultrasonic_sensor.distance <= dist_to_wall + buffer_distance:
-        led.color = GREEN
+    trapActive = False
+    
+    #Need multiple threads
+    app.run(host='0.0.0.0')
+    
+    
+    if (trapActive == True):
         
-        lcd.clear()
-        
-        lcd.message('All Clear...\nAll Clear...')
-        
-    else:
-        led.color = RED
-        print(f"Alarm was Tripped at: {now}")
-        alert_beep()
-        
-        lcd.clear()
-        lcd.message("Intruder!\nClayton Detected")
-        
-        #send_emails()
-        #end = False
-        
-    sleep(0.05)
+        if ultrasonic_sensor.distance >= dist_to_wall - buffer_distance and ultrasonic_sensor.distance <= dist_to_wall + buffer_distance:
+            led.color = GREEN
+            
+            lcd.clear()
+            
+            lcd.message('All Clear...\nAll Clear...')
+        else:
+            led.color = RED
+            print(f"Alarm was Tripped at: {now}")
+            alert_beep()
+            
+            lcd.clear()
+            lcd.message("Intruder!\nClayton Detected")
+            
+            #send_emails()
+            #end = False
+        sleep(0.05)
+    
+    
 
 lcd.clear()

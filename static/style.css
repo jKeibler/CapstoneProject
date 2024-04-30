@@ -1,0 +1,26 @@
+h1{
+    color: black;
+}
+p {
+    color: black;
+}
+.container {
+    background-color: lightblue;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 35px;
+    margin-bottom: 35px;    
+}
+.main-body {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 35px;
+    margin-bottom: 50px
+}
+body {
+    background-color: lightgrey;
+}
+button {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
