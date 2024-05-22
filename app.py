@@ -9,7 +9,7 @@ from LCD_Display.PCF8574 import PCF8574_GPIO
 from LCD_Display.Adafruit_LCD1602 import Adafruit_CharLCD
 from flask import Flask, render_template
 from markupsafe import escape
-
+import threading 
 
 
 #For the GUI, web browser
@@ -163,10 +163,10 @@ lcd.begin(16,2)
 #Begin the loop for detection
 while end == True:
     now = datetime.now()
-    trapActive = False
+    trapActive = True
     
     #Need multiple threads
-    app.run(host='0.0.0.0')
+    #app.run(host='0.0.0.0')
     
     
     if (trapActive == True):
@@ -183,7 +183,7 @@ while end == True:
             alert_beep()
             
             lcd.clear()
-            lcd.message("Intruder!\nClayton Detected")
+            lcd.message("Intruder, Alert!\nIntruder, Alert!")
             
             #send_emails()
             #end = False
