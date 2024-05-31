@@ -7,6 +7,11 @@ import ssl
 import smtplib
 current_time = datetime.now()
 
+
+#THIS EMAIL WAS KILLED
+# USE jkeibler914@gmail.com
+#SAME PASSWORD
+# APP PASSWORD IS - ifeo nkxm azti eioc
 email_sender = 'jkeibler913@gmail.com'
 email_password = 'cbav ssng tlvl sqpy'
 email_pw = '$Piproj35'

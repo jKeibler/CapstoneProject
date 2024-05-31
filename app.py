@@ -98,12 +98,12 @@ def alert_beep():
     buzzer.off()
     sleep(0.25)
 
-#List of the email recipients,
-email_recipients = ['keibler.joshua@gmail.com', 'rliddick@southhills.edu','cotto06@southhills.edu']
+#List of the email recipients, Here is where you add/remove emails
+email_recipients = ['keibler.joshua@gmail.com', 'rliddick@southhills.eduS']
 
 def send_emails():
-    email_sender = 'jkeibler913@gmail.com'
-    email_password = 'cbav ssng tlvl sqpy'
+    email_sender = 'jkeibler914@gmail.com'
+    email_password = 'ifeo nkxm azti eioc'
     subject = 'Security Alert! Trap Triggered!'
     body = f"""
         Hello Valued Customer,
@@ -185,7 +185,7 @@ while end == True:
             lcd.clear()
             lcd.message("Intruder, Alert!\nIntruder, Alert!")
             
-            #send_emails()
+            send_emails()
             #end = False
         sleep(0.05)
     
